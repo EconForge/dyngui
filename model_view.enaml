@@ -1,0 +1,116 @@
+from enaml.widgets.api import Form, Label, Field, Window, \
+        Container, GroupBox, PushButton, Notebook, Page
+
+from enaml.layout.api import vbox, hbox, horizontal, vertical
+
+from enaml.applib.live_editor_model import LiveEditorModel
+from enaml.applib.live_editor_view import ModelEditorPanel
+
+
+from enaml.validator import RegexValidator
+
+from enaml.qt.qt_multiline_field import QMultilineEdit
+from enaml.widgets.multiline_field import MultilineField
+
+
+# checks for a list of comma separated variables
+regex_varlist = '[_A-Za-z][_a-zA-Z0-9]*(, [_A-Za-z][_a-zA-Z0-9]*)*$'
+
+
+
+enamldef RegexField(Field):
+    attr regex: str
+    validator << RegexValidator(regex=regex)
+
+enamldef EquationsEditor(MultilineField):
+
+    pass
+
+
+enamldef Main(Window):
+
+  Container:
+    Notebook:
+
+        tab_style = 'preferences'
+
+        Page:
+
+            title='Model'
+            closable=False
+
+            Container:cont:
+                constraints = [ 
+                    hbox(pb1,pb2,pb3),
+                    pb1.width == pb3.width,
+                    pb1.width == width/5,
+                ]
+
+                Form: pb1:
+                    Label:
+                        text = 'First Name'
+                    Field:
+                        text = ''
+                    Label:
+                        text = 'Last Name'
+                    Field:
+                        text = ''
+
+
+
+                Form: pb2:
+                    Container:
+                        constraints = [
+                            vbox(ab1, eq_editor, ab3),
+                            eq_editor.height >= height/10*6
+                        ]
+                        GroupBox:ab1:
+                            title = 'Symbols'
+                            Form:
+                                Label:
+                                    text = 'variables'
+                                RegexField:
+                                    regex = regex_varlist
+                                    text = ''
+                                Label:
+                                    text = 'shocks'
+                                RegexField:
+                                    regex = regex_varlist
+                                Label:
+                                    text = 'parameters'
+                                RegexField:
+                                    regex = regex_varlist
+
+                        EquationsEditor:eq_editor:
+                            pass
+
+                        Container:ab3:
+                            constraints = [
+                                horizontal(acb1, acb2)
+                            ]
+
+                            PushButton:acb1:
+                                text = 'Check'
+                            PushButton:acb2:
+                                text = 'Solve'
+
+
+                Form: pb3:
+                    Label:
+                        text = 'First Name'
+                    Field:
+                        text = 'fas'
+                    Label:
+                        text = 'Last Name'
+                    Field:
+                        pass
+                        #text = ''
+
+        Page:
+
+            title = 'Simulations'
+            closable = False
+
+            Label:
+
+                text = "Second page"
