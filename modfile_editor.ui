@@ -266,7 +266,7 @@
               <item>
                <widget class="QToolBox" name="toolBox">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="page">
                  <property name="geometry">
@@ -344,6 +344,9 @@
                     </property>
                     <property name="maximum">
                      <number>100</number>
+                    </property>
+                    <property name="value">
+                     <number>50</number>
                     </property>
                    </widget>
                   </item>

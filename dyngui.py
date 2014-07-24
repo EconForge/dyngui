@@ -161,14 +161,13 @@ class MainWindow(QtGui.QMainWindow):
         from dolo.algos.dynare.perturbations import solve_decision_rule
 
         order = self.ui.comboBox_order.currentIndex() + 1
-        print(order)
         horizon = self.ui.spinBox_horizon.value()
-        print(horizon)
         dmodel = self.read_model()
 
         dr = solve_decision_rule(dmodel, order=order)
-        print(dr)
 
+        from dolo.algos.dynare.simulations import stoch_simul
+        stoch_simul(dr, horizon=horizon, plot=True)
 
     def read_equations(self):
 
@@ -267,6 +266,20 @@ class MainWindow(QtGui.QMainWindow):
             vals.append(line)
         return vals
 
+    def write_covariances(self,covs):
+
+        import numpy
+        covs = numpy.array(covs,dtype=object)
+        table = self.ui.tableWidget_covariances
+
+        n = len(covs)
+        # change size of table
+        for i in range(n):
+            for j in range(n):
+                v = covs[i,j]
+                cell = QtGui.QTableWidgetItem()
+                cell.setText(str(covs[i,j]))
+                table.setItem(i,j,cell)
 
     def open_file(self, filename=None):
 
@@ -291,6 +304,9 @@ class MainWindow(QtGui.QMainWindow):
             calib_text += '{} = {}\n'.format(k,v)
 
         self.ui.textEdit_calibration.setPlainText(calib_text)
+
+        covs = d['covariances']
+        self.write_covariances(covs)
 
     #
     # def save_file(self,filename):
